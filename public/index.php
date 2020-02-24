@@ -1,4 +1,5 @@
 <?php
+echo "Hello world!";
 use Framework\Application;
 use Framework\Http\Request;
 

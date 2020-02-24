@@ -1,0 +1,13 @@
+{
+    "name": "mvc/mvc",
+    "description": "model-view-composer library",
+    "authors": [
+        {
+            "name": "apostola",
+            "email": "alexei.postolachi@evozon.com"
+        }
+    ],
+    "require": {
+        "psr/http-message": "^1.0"
+    }
+}
