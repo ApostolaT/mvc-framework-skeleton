@@ -3,6 +3,7 @@
 namespace Framework;
 
 use Exception;
+use Framework\Contracts\ContainerInterface;
 use Framework\Contracts\DispatcherInterface;
 use Framework\Contracts\RouterInterface;
 use Framework\Http\Request;
@@ -11,12 +12,12 @@ use Framework\Routing\RouteMatch;
 
 class Application
 {
-    public function __construct(Framework\Contracts\ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         // TODO
     }
 
-    public static function create(Framework\Contracts\ContainerInterface $container): self
+    public static function create(ContainerInterface $container): self
     {
         // TODO:
         // implement the constructor and make sure that the statically created app is also added to the container

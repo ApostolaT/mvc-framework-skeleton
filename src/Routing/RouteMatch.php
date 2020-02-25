@@ -4,25 +4,42 @@ namespace Framework\Routing;
 
 class RouteMatch
 {
+    private $method = null;
+    private $controller = null;
+    private $action = null;
+    private $reqAttributes = null;
+
+    public function __construct(
+        $method,
+        $controller,
+        $action,
+        $reqAttributes)
+    {
+        $this->method = $method;
+        $this->controller = $controller;
+        $this->action = $action;
+        $this->reqAttributes = $reqAttributes;
+    }
+
     public function getMethod(): string
     {
-        //TODO: return GET, POST, PUT, DELETE ...
+        return $this->method;
     }
 
     public function getControllerName(): string
     {
-        //TODO: return the controller name
+        return $this->controller;
     }
 
 
     public function getActionName(): string
     {
-        //TODO: return the controller action
+        return $this->action;
     }
 
 
     public function getRequestAttributes(): array
     {
-        //TODO: return attributes extracted from PATH_INFO
+        return $this->reqAttributes;
     }
 }

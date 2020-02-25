@@ -18,7 +18,7 @@ class Request implements RequestInterface
 
     public function getParameter(string $name)
     {
-        //TODO
+        return "/user/1";
     }
 
     public function getCookie(string $name)
@@ -142,7 +142,7 @@ class Request implements RequestInterface
      */
     public function getMethod()
     {
-        // TODO: Implement getMethod() method.
+        return "GET";
     }
 
     /**
@@ -158,7 +158,6 @@ class Request implements RequestInterface
      */
     public function getUri()
     {
-        // TODO: Implement getUri() method.
     }
 
     /**
@@ -167,5 +166,9 @@ class Request implements RequestInterface
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
         // TODO: Implement withUri() method.
+    }
+
+    public function getPath() : string {
+        return "/user/1";
     }
 }

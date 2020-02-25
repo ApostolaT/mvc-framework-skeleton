@@ -1,6 +1,6 @@
 {
     "name": "mvc/mvc",
-    "description": "model-view-composer library",
+    "description": "model-view-controller library",
     "authors": [
         {
             "name": "apostola",
@@ -8,7 +8,8 @@
         }
     ],
     "require": {
-        "psr/http-message": "^1.0"
+        "psr/http-message": "^1.0",
+        "psr/container": "^1.0"
     },
     "autoload": {
         "psr-4": {
