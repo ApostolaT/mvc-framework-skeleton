@@ -16,20 +16,25 @@ ini_set("display_errors", 1);
 // obtain the DI container
 //$container = require $baseDir.'/config/services.php';
 
+/// Router config
+//        $routes = require $baseDir.'/config/routes.php';
+//
+//        $router = new Router($routes);
+//        $request = new Request();
+//        try {
+//            $match = $router->route($request);
+//            echo $match->getMethod()."<br>";
+//            echo $match->getActionName()."<br>";
+//            echo $match->getControllerName()."<br>";
+//            print_r($match->getRequestAttributes());
+//        } catch (RouteNotFoundException $e) {
+//            echo "404 Route not found";
+//        }
 
-$routes = require $baseDir.'/config/routes.php';
-
-$router = new Router($routes);
 $request = new Request();
-try {
-    $match = $router->route($request);
-    echo $match->getMethod()."<br>";
-    echo $match->getActionName()."<br>";
-    echo $match->getControllerName()."<br>";
-    print_r($match->getRequestAttributes());
-} catch (RouteNotFoundException $e) {
-    echo "404 Route not found";
-}
+
+echo $request->getHeaders();
+
 
 // create the application and handle the request
 

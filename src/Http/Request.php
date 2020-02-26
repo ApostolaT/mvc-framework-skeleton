@@ -5,9 +5,16 @@ namespace Framework\Http;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
+use Framework\GlobalObjects;
 
 class Request implements RequestInterface
 {
+    private $get = null;
+    private $post = null;
+    private $server = null;
+    private $file = null;
+    private $cookie = null;
+
     public static function createFromGlobals(): self
     {
         // TODO:
@@ -18,7 +25,7 @@ class Request implements RequestInterface
 
     public function getParameter(string $name)
     {
-        return "/user/1";
+        return "";
     }
 
     public function getCookie(string $name)
@@ -38,7 +45,7 @@ class Request implements RequestInterface
      */
     public function getProtocolVersion()
     {
-        // TODO: Implement getProtocolVersion() method.
+        return $_SERVER["SERVER_PROTOCOL"];
     }
 
     /**
@@ -55,6 +62,8 @@ class Request implements RequestInterface
     public function getHeaders()
     {
         // TODO: Implement getHeaders() method.
+        return $_SERVER["HTTP_HOST"];
+
     }
 
     /**
@@ -79,6 +88,7 @@ class Request implements RequestInterface
     public function getHeaderLine($name)
     {
         // TODO: Implement getHeaderLine() method.
+
     }
 
     /**
@@ -87,6 +97,7 @@ class Request implements RequestInterface
     public function withHeader($name, $value)
     {
         // TODO: Implement withHeader() method.
+
     }
 
     /**
@@ -142,7 +153,7 @@ class Request implements RequestInterface
      */
     public function getMethod()
     {
-        return "GET";
+        return $_SERVER["REQUEST_METHOD"];
     }
 
     /**
@@ -158,6 +169,7 @@ class Request implements RequestInterface
      */
     public function getUri()
     {
+        return $_SERVER["REQUEST_URI"];
     }
 
     /**

@@ -11,7 +11,6 @@ use Framework\Routing\RouteMatch;
 class Router implements RouterInterface
 {
     const CONFIG_KEY_PATH = "path";
-
     private $routes = null;
 
     public function __construct($routes)
@@ -26,18 +25,16 @@ class Router implements RouterInterface
         $regexConstructor = new RegexConstructor();
         $routes = $this->routes["routing"]["routes"];
 
-
         foreach ($routes as $configPaths) {
-            // if !method continue
-            $pattern = $regexConstructor->createRegex($configPaths);
+            if ($method !== $configPaths['method']) continue;
 
-            if (
-                preg_match($pattern, $uri, $matches)
-                && $method === $configPaths['method'])
+            $pattern = $regexConstructor->createRegex($configPaths);
+            if (preg_match($pattern, $uri, $matches))
             {
                 $filter = function($var) {return !is_numeric($var);};
                 $matches = array_filter($matches, $filter, ARRAY_FILTER_USE_KEY);
 
+                // TODO make controller's first letter Uppercase
                 return new RouteMatch(
                     $request->getMethod(),
                     $this->routes["dispatcher"]["controller_namespace"]."\\"
@@ -49,6 +46,7 @@ class Router implements RouterInterface
             }
         }
 
+        // TODO make exceptions like Dan said, with custom in config 404 page with DI
         throw new RouteNotFoundException();
     }
 }
