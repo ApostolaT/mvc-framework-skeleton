@@ -3,12 +3,15 @@
 namespace Framework\Router;
 
 use Framework\Contracts\RouterInterface;
-use Framework\Exceptions\BadRequestException;
+use Framework\Exceptions\RouteNotFoundException;
 use Framework\Http\Request;
+use Framework\Regex\RegexConstructor;
 use Framework\Routing\RouteMatch;
 
 class Router implements RouterInterface
 {
+    const CONFIG_KEY_PATH = "path";
+
     private $routes = null;
 
     public function __construct($routes)
@@ -18,39 +21,34 @@ class Router implements RouterInterface
 
     public function route(Request $request): RouteMatch
     {
-        //if ( $request->getMethod() ) throw new BadRequestException();
         $uri = $request->getPath();
+        $method = $request->getMethod();
+        $regexConstructor = new RegexConstructor();
+        $routes = $this->routes["routing"]["routes"];
 
-        foreach ($this->routes as $operation) {
-            $pattern =
-                "/".
-                preg_replace(
-                    "/\//",
-                    "\/",
-                    $operation["uri"])
-                ."/";
 
-            if (preg_match($pattern, $uri) && $request->getMethod() === $operation['method']) {
+        foreach ($routes as $configPaths) {
+            // if !method continue
+            $pattern = $regexConstructor->createRegex($configPaths);
 
-                $matches = null;
-                preg_match($pattern, $uri, $matches);
-
-                $reqAttributes = array();
-                foreach ($matches as $key => $value) {
-                    if (!is_numeric($key)) {//         sau o functie array_filter
-                        $reqAttributes[$key] = $value;
-                    }
-                }
+            if (
+                preg_match($pattern, $uri, $matches)
+                && $method === $configPaths['method'])
+            {
+                $filter = function($var) {return !is_numeric($var);};
+                $matches = array_filter($matches, $filter, ARRAY_FILTER_USE_KEY);
 
                 return new RouteMatch(
                     $request->getMethod(),
-                    $operation["controller"],
-                    $operation["action"],
-                    $reqAttributes
+                    $this->routes["dispatcher"]["controller_namespace"]."\\"
+                    .$configPaths["controller"]
+                    .$this->routes["dispatcher"]["controller_suffix"],
+                    $configPaths["action"],
+                    $matches
                 );
             }
         }
 
-        return null;
+        throw new RouteNotFoundException();
     }
 }

@@ -1,24 +1,42 @@
 <?php
 
+use Framework\Router\Router;
+
 $configuration = [
-    "user_list_all" => [
-        "uri" => "^/user$",
-        "controller" => "userController",
-        "action" => "getAll",
-        "method" => "GET"
+    "dispatcher" => [
+        "controller_suffix" => "Controller",
+        "controller_namespace" => "ApplicationController\Controllers"
     ],
-    "user_list_id" => [
-        "uri" => "^/user/(?<id>\d+)",
-        "controller" => "userController",
-        "action" => "getId",
-        "method" => "GET"
-    ],
-    "user_update_id_role" => [
-        "uri" => "^/user/(?<id>\d+)/setRole/(?<role>ADMIN|GUEST)$",
-        "controller" => "userController",
-        "action" => "updateRole",
-        "method" => "GET"
-    ]
+    "routing" => [
+        "routes" => [
+            "user_list_all" => [
+                Router::CONFIG_KEY_PATH => "/user",
+                "controller" => "user",
+                "action" => "getAll",
+                "method" => "GET",
+                "attributes" => []
+            ],
+                "user_list_id" => [
+                Router::CONFIG_KEY_PATH => "/user/{id}",
+                "controller" => "user",
+                "action" => "getId",
+                "method" => "GET",
+                "attributes" => [
+                    "id" => "\d+",
+                ]
+            ],
+                "user_update_id_role" => [
+                Router::CONFIG_KEY_PATH => "/user/{id}/setRole/{role}",
+                "controller" => "user",
+                "action" => "updateRole",
+                "method" => "GET",
+                "attributes" => [
+                    "id" => "\d+",
+                    "role" => "ADMIN|USER"
+                ]
+            ]
+        ]
+   ]
 ];
 
 return $configuration;

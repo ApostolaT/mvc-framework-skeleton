@@ -6,9 +6,9 @@ require $baseDir.'/vendor/autoload.php';
 use Framework\Application;
 use Framework\Http\Request;
 use Framework\Router\Router;
+use Framework\Exceptions\RouteNotFoundException;
 
-// obtain the base directory for the web application a.k.a. document root
-
+ini_set("display_errors", 1);
 
 // setup auto-loading
 
@@ -21,15 +21,15 @@ $routes = require $baseDir.'/config/routes.php';
 
 $router = new Router($routes);
 $request = new Request();
-$match = $router->route($request);
-
-echo $match->getMethod()."<br>";
-echo $match->getActionName()."<br>";
-echo $match->getControllerName()."<br>";
-print_r($match->getRequestAttributes());
-
-
-
+try {
+    $match = $router->route($request);
+    echo $match->getMethod()."<br>";
+    echo $match->getActionName()."<br>";
+    echo $match->getControllerName()."<br>";
+    print_r($match->getRequestAttributes());
+} catch (RouteNotFoundException $e) {
+    echo "404 Route not found";
+}
 
 // create the application and handle the request
 

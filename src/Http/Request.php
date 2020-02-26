@@ -169,6 +169,6 @@ class Request implements RequestInterface
     }
 
     public function getPath() : string {
-        return "/user/1";
+        return "/user/1/setRole/ADMIN";
     }
 }
