@@ -27,6 +27,7 @@ $configuration = [
             ],
                 "user_update_id_role" => [
                 Router::CONFIG_KEY_PATH => "/user/{id}/setRole/{role}",
+
                 "controller" => "user",
                 "action" => "updateRole",
                 "method" => "GET",

@@ -4,15 +4,17 @@ $baseDir = dirname(__DIR__);
 require $baseDir.'/vendor/autoload.php';
 
 use Framework\Application;
+use Framework\Dispatcher\Dispatcher;
 use Framework\Http\Request;
+use Framework\Http\Stream;
+use Framework\Render\Renderer;
 use Framework\Router\Router;
 use Framework\Exceptions\RouteNotFoundException;
+use Framework\Http\Message;
 
 ini_set("display_errors", 1);
 
 // setup auto-loading
-
-
 // obtain the DI container
 //$container = require $baseDir.'/config/services.php';
 
@@ -31,14 +33,31 @@ ini_set("display_errors", 1);
 //            echo "404 Route not found";
 //        }
 
-$request = new Request();
-
-echo $request->getHeaders();
-
-
 // create the application and handle the request
 
 //$application = Application::create($container);
 //$request = Request::createFromGlobals();
 //$response = $application->handle($request);
 //$response->send();
+
+$request = Request::createFromGlobals();
+$dispatcher = new Dispatcher("Framework\Controller", "Controller");
+$renderer = new Renderer("");
+$routeMatch =  new \Framework\Routing\RouteMatch(
+    "GET",
+    "",
+    "getUser",
+    ["id"=>"4"]
+);
+
+$controller = new Framework\Controller\Controller($renderer);
+$dispatcher->addController($controller);
+$response = $dispatcher->dispatch($routeMatch, $request);
+$response->send();
+
+
+//$request = new Request($_SERVER["SERVER_PROTOCOL"], ["header1", "header2"], "salutsalut");
+//$request = Request::createFromGlobals();
+//var_dump($request);
+
+

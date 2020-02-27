@@ -3,21 +3,45 @@
 
 namespace Framework\Http;
 
+const DEFAULT_MEMORY = 1 * 1024 * 1024;
+const READ_MODE = "r+";
 
+use Exception;
 use Psr\Http\Message\StreamInterface;
 
 class Stream implements StreamInterface
 {
-    //constructor cu parametrii un string
+    private $stream = null;
+    private $streamSize = null;
+    private $isWritable = false;
+    private $isReadable = false;
+    private $isSeekable = false;
+
+    public function __construct($handler,int $size = null)
+    {
+        $this->stream = $handler;
+        $this->streamSize = $size;
+        $this->isWritable = $this->isReadable = $this->isSeekable = true;
+    }
+
+    public static function createFromString(string $content): self
+    {
+        $stream = fopen(sprintf("php://temp/maxmemory:%s", DEFAULT_MEMORY), READ_MODE);
+        fwrite($stream,$content);
+        return new self($stream,strlen($content));
+    }
 
     /**
      * @inheritDoc
      */
     public function __toString()
     {
-        // TODO: Implement __toString() method.
-        //fseek spre pointerul 0
-        //fread from a stream from beggining
+        if(!isset($this->stream)) {
+            return null;
+        }
+
+        $this->seek(0);
+        return $this->read($this->streamSize);
     }
 
     /**
@@ -25,8 +49,8 @@ class Stream implements StreamInterface
      */
     public function close()
     {
-        // TODO: Implement close() method.
-        //fclose
+        fclose($this->stream);
+        $this->detach();
     }
 
     /**
@@ -34,8 +58,17 @@ class Stream implements StreamInterface
      */
     public function detach()
     {
-        // TODO: Implement detach() method.
-        // un close care verifica daca exista streamul
+        if (!isset($this->stream)) {
+            return null;
+        }
+
+        $result = $this->stream;
+        unset($this->stream);
+
+        $this->streamSize = null;
+        $this->isReadable = $this->isWritable = $this->isSeekable = false;
+
+        return $result;
     }
 
     /**
@@ -43,7 +76,11 @@ class Stream implements StreamInterface
      */
     public function getSize()
     {
-        // TODO: Implement getSize() method.
+        if (!isset($this->stream)) {
+            return null;
+        }
+
+        return $this->streamSize;
     }
 
     /**
@@ -51,8 +88,11 @@ class Stream implements StreamInterface
      */
     public function tell()
     {
-        // TODO: Implement tell() method.
-        //where is the pointer return ftell();
+        if (!isset($this->stream)) {
+            return null;
+        }
+
+        return ftell($this->stream);
     }
 
     /**
@@ -60,7 +100,11 @@ class Stream implements StreamInterface
      */
     public function eof()
     {
-        // TODO: Implement eof() method.
+        if (!isset($this->stream)) {
+            return false;
+        }
+
+        return ftell($this->stream) === $this->streamSize;
     }
 
     /**
@@ -68,7 +112,7 @@ class Stream implements StreamInterface
      */
     public function isSeekable()
     {
-        // TODO: Implement isSeekable() method.
+        return $this->isSeekable;
     }
 
     /**
@@ -76,8 +120,11 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        // TODO: Implement seek() method.
-        //changes pointer position
+        if (!$this->isSeekable) {
+            throw new Exception("Stream is not seekable");
+        }
+
+        fseek($this->stream, $offset, $whence);
     }
 
     /**
@@ -85,8 +132,11 @@ class Stream implements StreamInterface
      */
     public function rewind()
     {
-        // TODO: Implement rewind() method.
-        //"fseek(0)"
+        if (!$this->isSeekable) {
+            throw new Exception("Stream is not seekable");
+        }
+
+        $this->seek(0);
     }
 
     /**
@@ -94,7 +144,7 @@ class Stream implements StreamInterface
      */
     public function isWritable()
     {
-        // TODO: Implement isWritable() method.
+        return $this->isWritable;
     }
 
     /**
@@ -102,7 +152,12 @@ class Stream implements StreamInterface
      */
     public function write($string)
     {
-        // TODO: Implement write() method.
+        if (!$this->isWritable()) {
+            throw new Exception("Trying to write into a non writable stream");
+        }
+
+        $x = fwrite($this->stream, $string);
+        $this->streamSize += $x;
     }
 
     /**
@@ -110,7 +165,7 @@ class Stream implements StreamInterface
      */
     public function isReadable()
     {
-        // TODO: Implement isReadable() method.
+        return $this->isReadable;
     }
 
     /**
@@ -118,7 +173,11 @@ class Stream implements StreamInterface
      */
     public function read($length)
     {
-        // TODO: Implement read() method.
+        if (!$this->isReadable()) {
+            return false;
+        }
+
+        return fread($this->stream, $length);
     }
 
     /**
@@ -126,8 +185,11 @@ class Stream implements StreamInterface
      */
     public function getContents()
     {
-        // TODO: Implement getContents() method.
-        //return stream_get_content($this->stream);
+        if (!isset($this->stream)) {
+            throw new Exception("in get Contents there is not set a stream");
+        }
+
+        return stream_get_contents($this->stream);
     }
 
     /**
@@ -135,7 +197,10 @@ class Stream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-        // TODO: Implement getMetadata() method.
-        //strea_get_metadata
+        if (!isset($this->stream)) {
+            throw new Exception("in getMetadata there is not set a stream");
+        }
+
+        $this->getMetadata();
     }
 }

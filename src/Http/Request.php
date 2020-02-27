@@ -3,141 +3,92 @@
 namespace Framework\Http;
 
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
-use Framework\GlobalObjects;
 
-class Request implements RequestInterface
+class Request extends Message implements RequestInterface
 {
-    private $get = null;
-    private $post = null;
-    private $server = null;
-    private $file = null;
     private $cookie = null;
+    private $requestTarget = null;
+    private $method = null;
+    private $uri = null;
+
+    public function __construct(
+        string $protocolVersion,
+        array $headers,
+        string $requestTarget,
+        string $method,
+        Stream $body,
+        URI $uri,
+        array $cookie)
+    {
+        $this->requestTarget = $requestTarget;
+        $this->method = $method;
+
+        $this->uri = $uri;
+        $this->cookie = $cookie;
+
+        parent::__construct($protocolVersion, $headers, $body);
+
+    }
 
     public static function createFromGlobals(): self
     {
-        // TODO:
-        // look in $_GET, $_POST, $_SERVER, $_FILES, $_COOKIES and extract data into this objects properties for
-        // easy access
-        return new self();
+        $protocolVersion = explode("/", $_SERVER["SERVER_PROTOCOL"])[1];
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (explode("_", $key)[0] === "HTTP"){
+                $headers[$key] = $value;
+            }
+        }
+        $requestTarget = $_SERVER["HTTP_HOST"];
+        $method = $_SERVER["REQUEST_METHOD"];
+
+        $streamID = fopen("php://input", "r+");
+        $stream = new Stream($streamID, fseek($streamID, 0, SEEK_END));
+
+        $uri = URI::createFromGlobals();
+
+        $cookie = $_COOKIE;
+
+        return new self($protocolVersion, $headers, $requestTarget, $method, $stream, $uri, $cookie);
     }
+
 
     public function getParameter(string $name)
     {
-        return "";
+        if (!isset($_GET)) {
+            return "";
+        }
+
+        if (!array_key_exists($name, $_GET)) {
+            return "";
+        }
+
+        return $_GET[$name];
     }
 
     public function getCookie(string $name)
     {
-        //TODO
+        if (!isset($_COOKIE)) {
+            return "";
+        }
+
+        if (!array_key_exists($name, $_COOKIE)) {
+            return "";
+        }
+
+        return $_COOKIE[$name];
     }
 
+    //skip
     public function moveUploadedFile(string $path)
     {
-        //TODO
+        //TODO moveUploadedFile
     }
 
-    // TODO: implement methods declared by RequestInterface
-
-    /**
-     * @inheritDoc
-     */
-    public function getProtocolVersion()
-    {
-        return $_SERVER["SERVER_PROTOCOL"];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withProtocolVersion($version)
-    {
-        // TODO: Implement withProtocolVersion() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getHeaders()
-    {
-        // TODO: Implement getHeaders() method.
-        return $_SERVER["HTTP_HOST"];
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasHeader($name)
-    {
-        // TODO: Implement hasHeader() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getHeader($name)
-    {
-        // TODO: Implement getHeader() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getHeaderLine($name)
-    {
-        // TODO: Implement getHeaderLine() method.
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withHeader($name, $value)
-    {
-        // TODO: Implement withHeader() method.
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withAddedHeader($name, $value)
-    {
-        // TODO: Implement withAddedHeader() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withoutHeader($name)
-    {
-        // TODO: Implement withoutHeader() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getBody()
-    {
-        // TODO: Implement getBody() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function withBody(StreamInterface $body)
-    {
-        // TODO: Implement withBody() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getRequestTarget()
     {
-        // TODO: Implement getRequestTarget() method.
+        return $this->requestTarget;
     }
 
     /**
@@ -145,7 +96,10 @@ class Request implements RequestInterface
      */
     public function withRequestTarget($requestTarget)
     {
-        // TODO: Implement withRequestTarget() method.
+        $method = clone $this;
+        $method->requestTarget = $requestTarget;
+
+        return $method;
     }
 
     /**
@@ -153,7 +107,7 @@ class Request implements RequestInterface
      */
     public function getMethod()
     {
-        return $_SERVER["REQUEST_METHOD"];
+        return $this->method;
     }
 
     /**
@@ -161,7 +115,10 @@ class Request implements RequestInterface
      */
     public function withMethod($method)
     {
-        // TODO: Implement withMethod() method.
+        $method = clone $this;
+        $method->method = $method;
+
+        return $method;
     }
 
     /**
@@ -169,7 +126,7 @@ class Request implements RequestInterface
      */
     public function getUri()
     {
-        return $_SERVER["REQUEST_URI"];
+        return $this->uri;
     }
 
     /**
@@ -177,10 +134,9 @@ class Request implements RequestInterface
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        // TODO: Implement withUri() method.
-    }
+        $request = clone $this;
+        $request->uri = $uri;
 
-    public function getPath() : string {
-        return "/user/1/setRole/ADMIN";
+        return $request;
     }
 }
