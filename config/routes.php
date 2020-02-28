@@ -5,7 +5,7 @@ use Framework\Router\Router;
 $configuration = [
     "dispatcher" => [
         "controller_suffix" => "Controller",
-        "controller_namespace" => "ApplicationController\Controllers"
+        "controller_namespace" => "Framework\Controller"
     ],
     "routing" => [
         "routes" => [
@@ -37,7 +37,10 @@ $configuration = [
                 ]
             ]
         ]
-   ]
+   ],
+    "errors" => [
+        "404" => "<h1>404 Page not found</h1>"
+    ]
 ];
 
 return $configuration;

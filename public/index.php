@@ -13,7 +13,6 @@ use Framework\Exceptions\RouteNotFoundException;
 use Framework\Http\Message;
 
 ini_set("display_errors", 1);
-
 // setup auto-loading
 // obtain the DI container
 //$container = require $baseDir.'/config/services.php';
@@ -40,20 +39,30 @@ ini_set("display_errors", 1);
 //$response = $application->handle($request);
 //$response->send();
 
-$request = Request::createFromGlobals();
+$routes = require $baseDir.'/config/routes.php';
+$renders = $baseDir."/renders";
+$router = new Router($routes);
 $dispatcher = new Dispatcher("Framework\Controller", "Controller");
-$renderer = new Renderer("");
-$routeMatch =  new \Framework\Routing\RouteMatch(
-    "GET",
-    "",
-    "getUser",
-    ["id"=>"4"]
-);
-
-$controller = new Framework\Controller\Controller($renderer);
+$renderer = new Renderer("$renders");
+$controller = new Framework\Controller\UserController($renderer);
 $dispatcher->addController($controller);
-$response = $dispatcher->dispatch($routeMatch, $request);
-$response->send();
+
+$request = Request::createFromGlobals();
+
+try {
+    $routeMatch = $router->route($request);
+    $response = $dispatcher->dispatch($routeMatch, $request);
+    $response->send();
+} catch (RouteNotFoundException $ex) {
+    echo "route not found";
+}
+
+
+
+
+
+
+
 
 
 //$request = new Request($_SERVER["SERVER_PROTOCOL"], ["header1", "header2"], "salutsalut");

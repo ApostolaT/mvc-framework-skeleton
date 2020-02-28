@@ -8,12 +8,12 @@ use Psr\Http\Message\StreamInterface;
 class Response extends Message implements ResponseInterface
 {
     private $reasonPhrase = "";
-    private $status = 404;
+    private $status = 200;
     private $header = [];
 
     public function __construct(
         Stream $body,
-        array $headers = ["key"=>"value"],
+        array $headers,
         string $protocolVersion = "1.1",
         string $status = "200"
     )
@@ -55,6 +55,8 @@ class Response extends Message implements ResponseInterface
 
     private function sendHeaders()
     {
+        $this->header = $this->getHeaders();
+
         foreach ($this->header as $key => $value) {
             header("$key: ".$value);
         }

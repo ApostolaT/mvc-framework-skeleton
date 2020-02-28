@@ -20,7 +20,7 @@ class Router implements RouterInterface
 
     public function route(Request $request): RouteMatch
     {
-        $uri = $request->getPath();
+        $uri = $request->getUri()->getPath();
         $method = $request->getMethod();
         $regexConstructor = new RegexConstructor();
         $routes = $this->routes["routing"]["routes"];
@@ -34,12 +34,9 @@ class Router implements RouterInterface
                 $filter = function($var) {return !is_numeric($var);};
                 $matches = array_filter($matches, $filter, ARRAY_FILTER_USE_KEY);
 
-                // TODO make controller's first letter Uppercase
-                return new RouteMatch(
+                return $this->createRouteMatch(
                     $request->getMethod(),
-                    $this->routes["dispatcher"]["controller_namespace"]."\\"
-                    .$configPaths["controller"]
-                    .$this->routes["dispatcher"]["controller_suffix"],
+                    ucwords($configPaths["controller"]),
                     $configPaths["action"],
                     $matches
                 );
@@ -49,4 +46,20 @@ class Router implements RouterInterface
         // TODO make exceptions like Dan said, with custom in config 404 page with DI
         throw new RouteNotFoundException();
     }
+
+    private function createRouteMatch(
+        string $method,
+        string $controller,
+        string $action,
+        array $reqArray
+    )
+    {
+        return new RouteMatch(
+            $method,
+            $controller,
+            $action,
+            $reqArray
+        );
+    }
 }
+

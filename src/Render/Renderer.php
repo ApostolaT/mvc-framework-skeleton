@@ -17,7 +17,7 @@ class Renderer implements RendererInterface{
 
     public function renderView(string $viewFile, array $arguments): Response
     {
-        $fullPath = $this->baseViewsPath . $viewFile;
+        $fullPath = $this->baseViewsPath . "/".$viewFile;
 
         ob_start();
 
@@ -28,15 +28,16 @@ class Renderer implements RendererInterface{
 
         $stream = Stream::createFromString($content);
 
-        return new Response($stream);;
+        return new Response($stream, []);
 
 
     }
 
     public function renderJson(array $data): Response {
+
         $json = json_encode($data);
         $stream = Stream::createFromString($json);
 
-        return new Response($stream);;
+        return new Response($stream, ["json" => "jsonBOIII"]);
     }
 }

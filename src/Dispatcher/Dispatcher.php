@@ -31,7 +31,7 @@ class Dispatcher implements DispatcherInterface
     }
 
     public function addController(AbstractController $controller) {
-        $this->controllers[] = $controller;
+        $this->controllers[get_class($controller)] = $controller;
     }
 
     private function createResponse(
@@ -40,13 +40,12 @@ class Dispatcher implements DispatcherInterface
         Request $request
     ): Response
     {
-        foreach ($this->controllers as $value) {
-            if (get_class($value) === $FQCN) {
-                $action = $routeMatch->getActionName();
-                $values = $routeMatch->getRequestAttributes();
+        if (key_exists($FQCN, $this->controllers)) {
+            $action = $routeMatch->getActionName();
+            $values = $routeMatch->getRequestAttributes();
 
-                return $value->$action($values);
-            }
+
+            return $this->controllers[$FQCN]->$action($request, $values);
         }
 
         return null;
