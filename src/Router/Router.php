@@ -4,42 +4,48 @@ namespace Framework\Router;
 
 use Framework\Contracts\RouterInterface;
 use Framework\Exceptions\RouteNotFoundException;
+use Framework\Exceptions\Router\RouterConfigException;
 use Framework\Http\Request;
-use Framework\Regex\RegexConstructor;
+use Framework\Regex\RegexBuilder;
 use Framework\Routing\RouteMatch;
 
 class Router implements RouterInterface
 {
-    const CONFIG_KEY_PATH = "path";
-    private $routes = null;
+    public const CONFIG_KEY_PATH = "path";
 
-    public function __construct($routes)
+    /**
+     * @var array
+     */
+    private $routes;
+
+    public function __construct(array $routes)
     {
         $this->routes = $routes;
     }
 
+    /**
+     * @throws RouteNotFoundException
+     * @throws RouterConfigException
+     */
     public function route(Request $request): RouteMatch
     {
         $uri = $request->getUri()->getPath();
         $method = $request->getMethod();
-        $regexConstructor = new RegexConstructor();
-        $routes = $this->routes["routing"]["routes"];
+        $regexBuilder = new RegexBuilder();
+        $routes = $this->getRoutes();
 
         foreach ($routes as $configPaths) {
             if ($method !== $configPaths['method']) continue;
 
-            $pattern = $regexConstructor->createRegex($configPaths);
-            if (preg_match($pattern, $uri, $matches))
-            {
-                $filter = function($var) {return !is_numeric($var);};
-                $matches = array_filter($matches, $filter, ARRAY_FILTER_USE_KEY);
+            $pattern = $regexBuilder->createRegex($configPaths);
+            if (preg_match($pattern, $uri, $routeParams)) {
+                $filter = function ($var) {
+                    return !is_numeric($var);
+                };
+                $routeParams = array_filter($routeParams, $filter, ARRAY_FILTER_USE_KEY);
+                $request->setRouteParameters($routeParams);
 
-                return $this->createRouteMatch(
-                    $request->getMethod(),
-                    ucwords($configPaths["controller"]),
-                    $configPaths["action"],
-                    $matches
-                );
+                return $this->createRouteMatch($request, $configPaths, $routeParams);
             }
         }
 
@@ -47,19 +53,25 @@ class Router implements RouterInterface
         throw new RouteNotFoundException();
     }
 
-    private function createRouteMatch(
-        string $method,
-        string $controller,
-        string $action,
-        array $reqArray
-    )
+    private function createRouteMatch(Request $request, array $configPaths, array $matches): RouteMatch
     {
         return new RouteMatch(
-            $method,
-            $controller,
-            $action,
-            $reqArray
+            $request->getMethod(),
+            ucfirst($configPaths["controller"]),
+            $configPaths["action"],
+            $matches
         );
+    }
+
+    /**
+     * @throws RouterConfigException
+     */
+    public function getRoutes(): array
+    {
+        if (!isset($this->routes["routing"]["routes"])) {
+            throw RouterConfigException::forRoutesConfigMissing();
+        }
+        return $this->routes["routing"]["routes"];
     }
 }
 

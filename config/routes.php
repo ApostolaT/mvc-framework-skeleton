@@ -27,7 +27,6 @@ $configuration = [
             ],
                 "user_update_id_role" => [
                 Router::CONFIG_KEY_PATH => "/user/{id}/setRole/{role}",
-
                 "controller" => "user",
                 "action" => "updateRole",
                 "method" => "GET",
@@ -35,12 +34,32 @@ $configuration = [
                     "id" => "\d+",
                     "role" => "ADMIN|USER"
                 ]
+            ],
+            "user_post_show" => [
+                Router::CONFIG_KEY_PATH => "/user/{id}",
+                "controller" => "user",
+                "action" => "postAll",
+                "method" => "POST",
+                "attributes" => [
+                    "id" => "\d+"
+                ]
+            ],
+            "user_post_delete" => [
+                Router::CONFIG_KEY_PATH => "/user/{id}",
+                "controller" => "delete",
+                "action" => "deleteUser",
+                "method" => "DELETE",
+                "attributes" => [
+                    "id" => "\d+"
+                ]
             ]
         ]
    ],
     "errors" => [
         "404" => "<h1>404 Page not found</h1>"
-    ]
+    ],
+    "render" =>
+        ["base_path" => "/var/www/mvc-framework-skeleton/renders/"]
 ];
 
 return $configuration;

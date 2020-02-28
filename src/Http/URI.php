@@ -46,7 +46,6 @@ class URI implements UriInterface
 
     public static function createFromGlobals(): self
     {
-        //TODO user and password from uri
         $scheme = $_SERVER["REQUEST_SCHEME"];
         $host = $_SERVER["HTTP_HOST"];
         $port = $_SERVER["SERVER_PORT"];

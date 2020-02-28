@@ -24,7 +24,4 @@ interface DispatcherInterface
      * Ex:
      * $response = $controllerObject->actionName($request);
      */
-
-
-    // TODO: Hint: register controller as services in the DI and inject them in the dispatcher during DI config
 }

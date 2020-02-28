@@ -3,6 +3,7 @@
 namespace Framework\Dispatcher;
 
 use Framework\Contracts\DispatcherInterface;
+use Framework\Exceptions\Dispatcher\ControllerNotFoundException;
 use Framework\Routing\RouteMatch;
 use Framework\Http\Request;
 use Framework\Http\Response;
@@ -25,29 +26,34 @@ class Dispatcher implements DispatcherInterface
      */
     public function dispatch(RouteMatch $routeMatch, Request $request): Response
     {
-        $FQCN = $this->controllerName."\\".$routeMatch->getControllerName().$this->suffix;
+        $controllerClassName = $this->controllerName."\\".$routeMatch->getControllerName().$this->suffix;
 
-        return $this->createResponse($FQCN, $routeMatch, $request);
+        return $this->createResponse($controllerClassName, $routeMatch, $request);
     }
 
+    /**
+     * This gets used from DI configuration
+     * @param AbstractController $controller
+     */
     public function addController(AbstractController $controller) {
         $this->controllers[get_class($controller)] = $controller;
     }
 
+    /**
+     * @throws ControllerNotFoundException
+     */
     private function createResponse(
-        string $FQCN,
+        string $controllerClassName,
         RouteMatch $routeMatch,
         Request $request
     ): Response
     {
-        if (key_exists($FQCN, $this->controllers)) {
+        if (key_exists($controllerClassName, $this->controllers)) {
             $action = $routeMatch->getActionName();
-            $values = $routeMatch->getRequestAttributes();
 
-
-            return $this->controllers[$FQCN]->$action($request, $values);
+            return $this->controllers[$controllerClassName]->$action($request);
         }
 
-        return null;
+        throw ControllerNotFoundException::forControllerNotFound($controllerClassName);
     }
 }

@@ -13,8 +13,8 @@ class RouteMatch
         $method,
         $controller,
         $action,
-        $reqAttributes)
-    {
+        $reqAttributes
+    ) {
         $this->method = $method;
         $this->controller = $controller;
         $this->action = $action;
@@ -31,15 +31,14 @@ class RouteMatch
         return $this->controller;
     }
 
-
     public function getActionName(): string
     {
         return $this->action;
     }
-
 
     public function getRequestAttributes(): array
     {
         return $this->reqAttributes;
     }
 }
+

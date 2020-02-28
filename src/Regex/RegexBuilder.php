@@ -4,7 +4,7 @@ namespace Framework\Regex;
 
 use Framework\Router\Router;
 
-class RegexConstructor
+class RegexBuilder
 {
     public function createRegex(array $config): string
     {

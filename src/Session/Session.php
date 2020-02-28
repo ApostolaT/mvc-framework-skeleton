@@ -1,10 +1,16 @@
 <?php
 
+namespace Framework\Session;
 
 use Framework\Contracts\SessionInterface;
 
 class Session implements SessionInterface
 {
+    public function __construct()
+    {
+        $this->start();
+    }
+
     public function start(): void
     {
         session_start();

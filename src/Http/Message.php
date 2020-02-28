@@ -14,8 +14,11 @@ abstract class Message implements MessageInterface
     private $headers = null;
     private $body = null;
 
-    public function __construct(string $protocolVersion, array $headers, StreamInterface $stream)
-    {
+    public function __construct(
+        string $protocolVersion,
+        array $headers,
+        StreamInterface $stream
+    ) {
         $this->protocolVersion = $protocolVersion;
         $this->headers = $headers;
         $this->body = $stream;
@@ -118,6 +121,11 @@ abstract class Message implements MessageInterface
         $message = clone $this;
         $message->headers = $this->getHeaders();
 
+        if (!$this->hasHeader($name)) {
+            $message->headers[$name] = $value;
+            return $message;
+        }
+        $message->headers[$name][] = $this->getHeaders();
         $message->headers = array_merge($message->getHeader($name), $value);
 
         return $message;
