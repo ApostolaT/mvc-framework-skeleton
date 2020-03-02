@@ -2,7 +2,6 @@
 
 namespace Framework\Http;
 
-use Exception;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Framework\Http;
-
 
 use Psr\Http\Message\UriInterface;
 

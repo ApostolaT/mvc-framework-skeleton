@@ -3,7 +3,6 @@
 namespace Framework\Http;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 class Response extends Message implements ResponseInterface
 {

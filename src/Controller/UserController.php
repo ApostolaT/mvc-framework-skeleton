@@ -1,9 +1,7 @@
 <?php
 
-
 namespace Framework\Controller;
 
-use Framework\Http\Request;
 use Psr\Http\Message\RequestInterface;
 
 class UserController extends AbstractController

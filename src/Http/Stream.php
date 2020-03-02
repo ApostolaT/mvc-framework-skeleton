@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Framework\Http;
 
 const DEFAULT_MEMORY = 1 * 1024 * 1024;

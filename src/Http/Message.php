@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Framework\Http;
-
 
 use http\Exception\InvalidArgumentException;
 use Psr\Http\Message\MessageInterface;
