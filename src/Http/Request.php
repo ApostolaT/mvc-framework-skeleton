@@ -40,7 +40,6 @@ class Request extends Message implements RequestInterface
         $this->post = $post;
 
         parent::__construct($protocolVersion, $headers, $body);
-
     }
 
     public static function createFromGlobals(): self
