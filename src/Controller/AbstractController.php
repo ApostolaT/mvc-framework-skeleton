@@ -17,7 +17,8 @@ abstract class AbstractController
      */
     protected $renderer;
 
-    private $session;
+
+    protected $session;
 
     public function setSession(Session $session)
     {
