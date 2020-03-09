@@ -29,7 +29,7 @@ class Application
             $routeMatch = $this->getRouter()->route($request);
         } catch (RouteNotFoundException $e) {
             //TODO create error;
-            $errorMatch = new RouteMatch($request->);
+//            $errorMatch = new RouteMatch($request->)
         }
 
         return $this->getDispatcher()->dispatch($routeMatch, $request);
