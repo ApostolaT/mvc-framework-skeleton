@@ -5,8 +5,10 @@ namespace Framework;
 use Framework\Contracts\ContainerInterface;
 use Framework\Contracts\DispatcherInterface;
 use Framework\Contracts\RouterInterface;
+use Framework\Exceptions\RouteNotFoundException;
 use Framework\Http\Request;
 use Framework\Http\Response;
+use Framework\Routing\RouteMatch;
 
 class Application
 {
@@ -23,7 +25,12 @@ class Application
 
     public function handle(Request $request): Response
     {
-        $routeMatch = $this->getRouter()->route($request);
+        try {
+            $routeMatch = $this->getRouter()->route($request);
+        } catch (RouteNotFoundException $e) {
+            //TODO create error;
+            $errorMatch = new RouteMatch($request->);
+        }
 
         return $this->getDispatcher()->dispatch($routeMatch, $request);
     }

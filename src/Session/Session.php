@@ -6,6 +6,7 @@ use Framework\Contracts\SessionInterface;
 
 class Session implements SessionInterface
 {
+    //TODO create errors when the session is not started
     public function __construct()
     {
         $this->start();
