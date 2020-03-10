@@ -2,13 +2,10 @@
 
 namespace Framework\Http;
 
-use Psr\Http\Message\ResponseInterface;
 
-class Response extends Message implements ResponseInterface
+class Response extends Message
 {
-    private $reasonPhrase = "";
     private $status = 200;
-    private $header = [];
 
     public function __construct(
         Stream $body,
@@ -26,22 +23,16 @@ class Response extends Message implements ResponseInterface
         echo $this->getBody();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function withStatus($code, $reasonPhrase = '')
-    {
-        $response = clone $this;
-        $response->status = $code;
-        $response->reasonPhrase = $reasonPhrase;
-    }
 
     /**
      * @inheritDoc
      */
-    public function getReasonPhrase()
+    public function withStatus($code)
     {
-        return $this->reasonPhrase;
+        $response = clone $this;
+        $response->status = $code;
+
+        return $response;
     }
 
     /**

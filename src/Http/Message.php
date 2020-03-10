@@ -87,8 +87,8 @@ abstract class Message implements MessageInterface
         $header = $this->getHeader($name);
 
         $string = "";
-        foreach ($header as $values) {
-            $string .= $values.",";
+        foreach ($header as $key => $values) {
+            $string .= $key." : ".$values.",";
         }
 
         return substr($string, 0, strlen($string) -1 );
@@ -99,12 +99,7 @@ abstract class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        if (!$this->hasHeader($name)) {
-            throw new InvalidArgumentException($name);
-        }
-
         $message = clone $this;
-        $message->headers = $this->getHeaders();
         $message->headers[$name] = $value;
 
         return $message;
@@ -117,7 +112,6 @@ abstract class Message implements MessageInterface
     public function withAddedHeader($name, $value)
     {
         $message = clone $this;
-        $message->headers = $this->getHeaders();
 
         if (!$this->hasHeader($name)) {
             $message->headers[$name] = $value;

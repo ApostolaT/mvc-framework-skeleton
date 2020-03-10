@@ -11,7 +11,6 @@ class UserController extends AbstractController
         return $response;
     }
 
-    // TODO finish postAll to send body with arguments
     public function postAll(RequestInterface $request) {
         $postBody = $request->getBody();
         $postBody = $postBody->getContents();

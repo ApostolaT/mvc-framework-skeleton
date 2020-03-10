@@ -29,6 +29,4 @@ abstract class AbstractController
     {
         $this->renderer = $renderer;
     }
-
-    // TODO: inject other services: session handling, mail sending, etc. into the actual controllers where needed
 }
