@@ -8,6 +8,7 @@ use Framework\Contracts\RouterInterface;
 use Framework\Exceptions\RouteNotFoundException;
 use Framework\Http\Request;
 use Framework\Http\Response;
+use Framework\Http\Stream;
 use Framework\Routing\RouteMatch;
 
 class Application
@@ -28,8 +29,11 @@ class Application
         try {
             $routeMatch = $this->getRouter()->route($request);
         } catch (RouteNotFoundException $e) {
-            //TODO create error;
-//            $errorMatch = new RouteMatch($request->)
+            $response = new Response(Stream::createFromString(' '), []);
+            $response = $response->withStatus(301);
+            $response = $response->withHeader('Location', $this->container['domain'].'/error/404');
+
+            return $response;
         }
 
         return $this->getDispatcher()->dispatch($routeMatch, $request);
