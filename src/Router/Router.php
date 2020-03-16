@@ -12,6 +12,10 @@ use Framework\Routing\RouteMatch;
 class Router implements RouterInterface
 {
     public const CONFIG_KEY_PATH = "path";
+    public const CONFIG_KEY_CONTROLLER = "controller";
+    public const CONFIG_KEY_ACTION = "action";
+    public const CONFIG_KEY_METHOD = "method";
+    public const CONFIG_KEY_ATTRIBUTES = "attributes";
 
     /**
      * @var array
