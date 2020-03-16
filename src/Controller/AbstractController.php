@@ -30,7 +30,7 @@ abstract class AbstractController
         $this->renderer = $renderer;
     }
 
-    private function getRedirectPage(string $path): Response
+    public function getRedirectPage(string $path): Response
     {
         $response = new Response(Stream::createFromString(' '), []);
         $response = $response->withStatus(301);

@@ -44,7 +44,7 @@ class Application
         return $this->container->get(RouterInterface::class);
     }
 
-    public function getDispatcher(): DispatcherInterface
+    private function getDispatcher(): DispatcherInterface
     {
         return $this->container->get(DispatcherInterface::class);
     }
