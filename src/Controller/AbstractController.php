@@ -5,6 +5,7 @@ namespace Framework\Controller;
 
 use Framework\Contracts\RendererInterface;
 use Framework\Http\Response;
+use Framework\Http\Stream;
 use Framework\Session\Session;
 
 /**
