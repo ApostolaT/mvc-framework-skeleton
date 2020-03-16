@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Framework\Controller;
 
 use Framework\Contracts\RendererInterface;
+use Framework\Http\Response;
 use Framework\Session\Session;
 
 /**
