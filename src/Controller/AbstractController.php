@@ -7,6 +7,7 @@ use Framework\Contracts\RendererInterface;
 use Framework\Http\Response;
 use Framework\Http\Stream;
 use Framework\Session\Session;
+use QuizApp\Utils\UrlHelper;
 
 /**
  * Base abstract class for application controllers.
@@ -14,6 +15,10 @@ use Framework\Session\Session;
  */
 abstract class AbstractController
 {
+    /**
+     * @var UrlHelper
+     */
+    protected $urlHelper;
     /**
      * @var RendererInterface
      */
@@ -39,5 +44,10 @@ abstract class AbstractController
         $response = $response->withHeader('Location', $path);
 
         return $response;
+    }
+
+    public function setUrlHelper(UrlHelper $urlHelper)
+    {
+        $this->urlHelper = $urlHelper;
     }
 }
