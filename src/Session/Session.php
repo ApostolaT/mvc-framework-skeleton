@@ -48,4 +48,9 @@ class Session implements SessionInterface
             unset($_SESSION[$name]);
         }
     }
+
+    public function isSet(string $name): bool
+    {
+        return key_exists($name, $_SESSION);
+    }
 }
