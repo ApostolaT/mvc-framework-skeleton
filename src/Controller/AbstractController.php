@@ -16,15 +16,13 @@ use QuizApp\Utils\UrlHelper;
 abstract class AbstractController
 {
     /**
-     * @var UrlHelper
-     */
-    protected $urlHelper;
-    /**
      * @var RendererInterface
      */
     protected $renderer;
 
-
+    /**
+     * @var Session
+     */
     protected $session;
 
     public function setSession(Session $session)
@@ -44,10 +42,5 @@ abstract class AbstractController
         $response = $response->withHeader('Location', $path);
 
         return $response;
-    }
-
-    public function setUrlHelper(UrlHelper $urlHelper)
-    {
-        $this->urlHelper = $urlHelper;
     }
 }
